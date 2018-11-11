@@ -8,26 +8,20 @@ export  const JSON_OPERATION = (action,pathFile,data,Storage,readType,res) => {
             });
         break;
         case 'write' :
-        console.log("FROM WRITE")
             fs.writeFile(pathFile,data,(err)=>{
 	            if (err) res.json({message:"error save data"});
-	            res.json({message:"success save data"});
+	            res.json({message:"Form Builders Saved",status:true});
             });
         break
         case 'read' :
-           
             fs.readFile(pathFile,(err,response)=>{
                 if (err) console.log("error read data");
                 if (response!=''){
                     var convertBuffer = response.toString('utf8');
-                    console.log(convertBuffer);
                     switch(readType){
                         case 'FormDetails' :
-                            if (Storage.DetailsForm.length==0){
-                                Storage.DetailsForm = [];
-                            }else {
-                                Storage.DetailsForm = JSON.parse(response);
-                            }
+                            Storage.DetailsForm = JSON.parse(response);
+                            res.json({message:"Success Load data",data:JSON.parse(response),status:true});
                         break;
                         default : return 0;
                     }

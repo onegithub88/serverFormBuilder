@@ -25,16 +25,13 @@ router.use(function(req,res,next){
 	next()
 });
 
-router.get('/get-form',function(req,res){
-	res.json({data:Storage.formBuilder});
+router.get('/get_detailform',function(req,res){
+	JSON_OPERATION('read',DetailFormPath,'',Storage,'FormDetails',res);
 });
-
-var DetailsForms = [];
 
 router.post('/create_detailform',function(req,res){
 	var BodyPost = JSON.stringify(req.body.dataPost);
-	DetailsForms.push(BodyPost);
-	JSON_OPERATION('write',DetailFormPath,DetailsForms,Storage,'',res);
+	JSON_OPERATION('write',DetailFormPath,BodyPost,Storage,'',res);
 });
 
 App.use('/api',router);
