@@ -17,7 +17,7 @@ var port 		   = process.env.PORT || 8888;
 var router 		   = express.Router();
 var DetailFormPath = './app/model/DetailsForms.json';
 var FormPath       = './app/model/Form.json';
-var WorkFlow       = './app/model/WorkFlow.json';
+var WorkFlowPath   = './app/model/WorkFlow.json';
 
 router.use(bodyParser.urlencoded({extended:true}));
 router.use(bodyParser.json());
@@ -32,6 +32,16 @@ router.get('/get_detailform',function(req,res){
 router.post('/create_detailform',function(req,res){
 	var BodyPost = JSON.stringify(req.body.dataPost);
 	JSON_OPERATION('write',DetailFormPath,BodyPost,Storage,'',res);
+});
+
+//create Form
+router.post('/create_form',function(req,res){
+	var BodyPost = JSON.stringify(req.body.dataPost);
+	JSON_OPERATION('write',FormPath,BodyPost,Storage,'',res);
+});
+
+router.get('/get_form',function(req,res){
+	JSON_OPERATION('read',FormPath,'',Storage,'Form',res);
 });
 
 App.use('/api',router);

@@ -23,6 +23,14 @@ export  const JSON_OPERATION = (action,pathFile,data,Storage,readType,res) => {
                             Storage.DetailsForm = JSON.parse(response);
                             res.json({message:"Success Load data",data:JSON.parse(response),status:true});
                         break;
+                        case 'Form' :
+                            Storage.Form = JSON.parse(response);
+                            res.json({message:"Success Load data",data:JSON.parse(response),status:true});
+                        break;
+                        case 'WorkFlow' :
+                            Storage.WorkFlow = JSON.parse(response);
+                            res.json({message:"Success Load data",data:JSON.parse(response),status:true});
+                        break;
                         default : return 0;
                     }
                 }
