@@ -22,7 +22,20 @@ var WorkFlowPath   = './app/model/WorkFlow.json';
 router.use(bodyParser.urlencoded({extended:true}));
 router.use(bodyParser.json());
 router.use(function(req,res,next){
-	next()
+	var ReadData=new Promise((resolve, reject)=>{
+	JSON_OPERATION('initial_read',FormPath,'',Storage,'Form',res);
+	JSON_OPERATION('initial_read',DetailFormPath,'',Storage,'FormDetails',res);
+	setTimeout(()=>{
+		resolve(true);
+	},500)
+	});
+	ReadData.then((response)=>{
+ 		if (response){
+			next()
+		}else {
+			res.send({message:'initial data error'});
+		}
+	})
 });
 
 router.get('/get_detailform',function(req,res){
@@ -42,6 +55,24 @@ router.post('/create_form',function(req,res){
 
 router.get('/get_form',function(req,res){
 	JSON_OPERATION('read',FormPath,'',Storage,'Form',res);
+});
+
+router.get('/delete_form/:id_workflow/:id_form',function(req,res){
+	var {Form} = Storage;
+	Storage.Form.filter((obj,i)=>{
+		if(obj.idWorkFlow==req.params.id_workflow && obj.idForm==req.params.id_form){
+			Form.splice(i,1);
+		}
+	});
+	JSON_OPERATION('rewrite',FormPath,JSON.stringify(Form),Storage,'',res);
+	var {DetailsForm} = Storage;
+	Storage.DetailsForm.filter((obj,i)=>{
+		if(obj.idWorkFlow==req.params.id_workflow && obj.idForm==req.params.id_form){
+			DetailsForm.splice(i,1);
+		}
+	});
+	JSON_OPERATION('rewrite',DetailFormPath,JSON.stringify(DetailsForm),Storage,'',res);
+	res.send({message:"delete success",data:[],status:true});
 });
 
 App.use('/api',router);
