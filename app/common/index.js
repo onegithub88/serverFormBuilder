@@ -41,7 +41,6 @@ export  const JSON_OPERATION = (action,pathFile,data,Storage,readType,res) => {
                 }else{
                     res.json({message:"data is empty",data:[],status:true});
                 }
-               
             });
         break;
         case 'initial_read' :
