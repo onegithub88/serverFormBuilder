@@ -53,6 +53,16 @@ router.post('/create_form',function(req,res){
 	JSON_OPERATION('write',FormPath,BodyPost,Storage,'',res);
 });
 
+//create workFlow
+router.post('/create_workflow',function(req,res){
+	var BodyPost = JSON.stringify(req.body.dataPost);
+	JSON_OPERATION('write',WorkFlowPath,BodyPost,Storage,'',res);
+});
+
+router.get('/get_workflow',function(req,res){
+	JSON_OPERATION('read',WorkFlowPath,'',Storage,'Form',res);
+});
+
 router.get('/get_form',function(req,res){
 	JSON_OPERATION('read',FormPath,'',Storage,'Form',res);
 });
