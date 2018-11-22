@@ -23,6 +23,7 @@ router.use(bodyParser.urlencoded({extended:true}));
 router.use(bodyParser.json());
 router.use(function(req,res,next){
 	var ReadData=new Promise((resolve, reject)=>{
+	JSON_OPERATION('initial_read',WorkFlowPath,'',Storage,'WorkFlow',res);
 	JSON_OPERATION('initial_read',FormPath,'',Storage,'Form',res);
 	JSON_OPERATION('initial_read',DetailFormPath,'',Storage,'FormDetails',res);
 	setTimeout(()=>{
@@ -60,7 +61,7 @@ router.post('/create_workflow',function(req,res){
 });
 
 router.get('/get_workflow',function(req,res){
-	JSON_OPERATION('read',WorkFlowPath,'',Storage,'Form',res);
+	JSON_OPERATION('read',WorkFlowPath,'',Storage,'WorkFlow',res);
 });
 
 router.get('/get_form',function(req,res){
@@ -70,19 +71,51 @@ router.get('/get_form',function(req,res){
 router.get('/delete_form/:id_workflow/:id_form',function(req,res){
 	var {Form} = Storage;
 	Storage.Form.filter((obj,i)=>{
-		if(obj.idWorkFlow==req.params.id_workflow && obj.idForm==req.params.id_form){
+		if(obj.idWorkFlow==req.params.id_workflow   && obj.idForm==req.params.id_form){
 			Form.splice(i,1);
 		}
 	});
 	JSON_OPERATION('rewrite',FormPath,JSON.stringify(Form),Storage,'',res);
 	var {DetailsForm} = Storage;
-	Storage.DetailsForm.filter((obj,i)=>{
+	Storage.DetailsForm.form.filter((obj,i)=>{
 		if(obj.idWorkFlow==req.params.id_workflow && obj.idForm==req.params.id_form){
-			DetailsForm.splice(i,1);
+			DetailsForm.form.splice(i,1);
 		}
 	});
 	JSON_OPERATION('rewrite',DetailFormPath,JSON.stringify(DetailsForm),Storage,'',res);
 	res.send({message:"delete success",data:[],status:true});
+});
+
+router.get('/delete_workflow/:id_workflow',function(req,res){
+	var {WorkFlow} = Storage;
+	Storage.WorkFlow.filter((obj,i)=>{
+		if(obj.key==req.params.id_workflow){
+			WorkFlow.splice(i,1);
+		}
+	});
+	JSON_OPERATION('rewrite',WorkFlowPath,JSON.stringify(WorkFlow),Storage,'',res);
+	var {Form}     = Storage;
+	var idWorkFlow ="idWorkFlow"+req.params.id_workflow;
+	if (Storage.Form.length > 0){
+		Storage.Form.filter((obj,i)=>{
+			if(obj.idWorkFlow==idWorkFlow){
+				Form.splice(i,1);
+			}
+		});
+		JSON_OPERATION('rewrite',FormPath,JSON.stringify(Form),Storage,'',res);	
+	}
+	var {DetailsForm} = Storage;
+	if (Storage.DetailsForm.form){
+		Storage.DetailsForm.form.filter((obj,i)=>{
+		if(obj.idWorkFlow==idWorkFlow){
+			DetailsForm.form.splice(i,1);
+		}
+		});
+		JSON_OPERATION('rewrite',DetailFormPath,JSON.stringify(DetailsForm),Storage,'',res);
+	}
+	setTimeout(()=>{
+		res.send({message:"delete success",data:[],status:true});
+	},300);
 });
 
 App.use('/api',router);
